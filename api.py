@@ -24,14 +24,6 @@ parser.add_argument('email', required=True, help="Email cannot be blank!")
 parser.add_argument('name', required=True, help="Name cannot be blank")
 parser.add_argument('is_company', type=inputs.boolean)
 
-
-def get_current_date():
-    if DEBUG:
-        return dt.now()
-    return dt.now().isoformat()
-
-
-
 class Producer(Resource):
 
     def post(self):
@@ -45,7 +37,7 @@ class Producer(Resource):
 
         data = parser.parse_args()
         data['ip'] = request.headers.get('X-Forwarded-For', request.remote_addr)
-        data['created_at'] = get_current_date()
+        data['created_at'] = dt.now()
         try:
             mongo.db.producers.insert(data)
             content = {"message": "A new producer has been registered!", "status_code": 200}
