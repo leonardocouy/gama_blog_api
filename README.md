@@ -41,7 +41,7 @@ Acesse em: http://127.0.0.1:5000/
 https://devcenter.heroku.com/articles/heroku-cli
 ```
 
-2. Após a instalação, abra o terminal e logue no heroku (caso não esteja)
+2. Após a instalação, abra o terminal e logue no heroku com a conta da nossa equipe!(caso não esteja)
 ```
 heroku login
 ```
@@ -59,4 +59,11 @@ Mais detalhes sobre como gerar a chave no link abaixo:
 ```
 https://devcenter.heroku.com/articles/keys
 ```
-4.
+
+4. Manda bala no push!
+
+```
+git push heroku master
+```
+
+Site: https://facanacav-blog.herokuapp.com/
