@@ -1,3 +1,4 @@
+import pytz
 from flask import Flask
 from flask import request
 from flask_restful import inputs, reqparse, Resource, Api
@@ -8,6 +9,9 @@ from decouple import config
 
 # If MONGODB_URL hasn't been setted in ENVIROMENT, use localhost (mongodb://localhost:27017/producers_db)
 APP_URL = config('MONGODB_URL', default="mongodb://localhost:27017/producers_db")
+
+# Variable to check if server is on production or local
+DEBUG = config('DEBUG', default="True", cast=bool)
 
 # Configuring App
 app = Flask(__name__)
@@ -21,20 +25,27 @@ parser.add_argument('name', required=True, help="Name cannot be blank")
 parser.add_argument('is_company', type=inputs.boolean)
 
 
+def get_current_date():
+    if DEBUG:
+        return dt.now()
+    return pytz.timezone('America/Sao_Paulo').localize(dt.now())
+
+
+
 class Producer(Resource):
 
     def post(self):
         """
-        1 - Get current date and hour (now)
+        1 - Get current date and hour (now), and save with BRT Timezone!!!
         2 - Validate the args passed in POST
         3 - Try to insert a new Producer, if the e-mail already have registered
         returns an error message.
         :return:
         """
-        now = dt.now()
+
         data = parser.parse_args()
         data['ip'] = request.headers.get('X-Forwarded-For', request.remote_addr)
-        data['created_at'] = now
+        data['created_at'] = get_current_date()
         try:
             mongo.db.producers.insert(data)
             content = {"message": "A new producer has been registered!", "status_code": 200}
@@ -48,4 +59,4 @@ api = Api(app)
 api.add_resource(Producer, "/api", endpoint="producers")
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=DEBUG)
