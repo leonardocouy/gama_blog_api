@@ -28,7 +28,7 @@ parser.add_argument('is_company', type=inputs.boolean)
 def get_current_date():
     if DEBUG:
         return dt.now()
-    return pytz.timezone('America/Sao_Paulo').localize(dt.now())
+    return dt.now().isoformat()
 
 
 
