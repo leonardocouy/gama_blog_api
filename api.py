@@ -22,12 +22,19 @@ parser.add_argument('is_company', type=inputs.boolean)
 
 
 class Producer(Resource):
-    now = dt.now().isoformat()
 
     def post(self):
+        """
+        1 - Get current date and hour (now)
+        2 - Validate the args passed in POST
+        3 - Try to insert a new Producer, if the e-mail already have registered
+        returns an error message.
+        :return:
+        """
+        now = dt.now()
         data = parser.parse_args()
         data['ip'] = request.headers.get('X-Forwarded-For', request.remote_addr)
-        data['created_at'] = self.now
+        data['created_at'] = now
         try:
             mongo.db.producers.insert(data)
             content = {"message": "A new producer has been registered!", "status_code": 200}
